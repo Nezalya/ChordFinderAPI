@@ -55,6 +55,12 @@ public class TeoriaController : ControllerBase
             .Where(e => e.Acordes.Any(a => a.Id == acordeBuscado.Id))
             .ToListAsync();
 
+        // Mapas de funciones armónicas según el grado
+        string[] funcionesMayor = { "Tónica", "Supertonica", "Mediante", "Subdominante", "Dominante", "Submediante", "Sensible" };
+        string[] funcionesMenor = { "Tónica", "Supertonica", "Mediante", "Subdominante", "Dominante", "Submediante", "Sensible" };
+        string[] romanosMayor = { "I", "ii", "iii", "IV", "V", "vi", "vii°" };
+        string[] romanosMenor = { "i", "ii°", "III", "iv", "v", "VI", "VII" };
+
         var resultado = new
         {
             AcordeBuscado = acordeBuscado.Nombre,
@@ -62,32 +68,54 @@ public class TeoriaController : ControllerBase
             TotalEscalasEncontradas = escalas.Count,
             EscalasDondeAparece = escalas.Select(e =>
             {
-                var listaNotasEscala = e.Notas
-                    .Split(',')
-                    .Select(n => n.Trim())
-                    .ToList();
+                var notasEscala = e.Notas.Split(',').Select(n => n.Trim()).ToList();
+                bool esMayor = e.Tipo.Equals("Mayor", StringComparison.OrdinalIgnoreCase);
 
-                var acordesOrdenados = e.Acordes
-                    .OrderBy(acorde =>
+                // Determinar Relativa
+                string relativaNombre = "";
+                string relativaTipo = esMayor ? "Menor" : "Mayor";
+                if (esMayor)
+                {
+                    // La relativa menor está en el grado 6 (índice 5)
+                    relativaNombre = $"{notasEscala[5]} Menor";
+                }
+                else
+                {
+                    // La relativa mayor está en el grado 3 (índice 2)
+                    relativaNombre = $"{notasEscala[2]} Mayor";
+                }
+
+                // Construir detalle de los 7 acordes con sus notas y función
+                var acordesDetallados = e.Acordes
+                    .OrderBy(a =>
                     {
-                        string notaTonicaAcorde = acorde.Nombre.EndsWith("dim")
-                            ? acorde.Nombre.Replace("dim", "")
-                            : acorde.Nombre.EndsWith("m") && !acorde.Nombre.EndsWith("maj7")
-                                ? acorde.Nombre.Substring(0, acorde.Nombre.Length - 1)
-                                : acorde.Nombre.Replace("maj7", "").Replace("7", "");
-
-                        int posicion = listaNotasEscala.IndexOf(notaTonicaAcorde);
-                        return posicion >= 0 ? posicion : 99; // Retorna el grado (0 a 6 / I a VII)
+                        string notaTonica = a.Nombre.EndsWith("dim") ? a.Nombre.Replace("dim", "")
+                            : a.Nombre.EndsWith("m") && !a.Nombre.EndsWith("maj7") ? a.Nombre[..^1]
+                            : a.Nombre.Replace("maj7", "").Replace("7", "");
+                        int pos = notasEscala.IndexOf(notaTonica);
+                        return pos >= 0 ? pos : 99;
                     })
-                    .Select(a => a.Nombre)
+                    .Select((a, idx) => new
+                    {
+                        Grado = esMayor ? romanosMayor[idx] : romanosMenor[idx],
+                        Acorde = a.Nombre,
+                        Notas = a.Notas,
+                        Funcion = esMayor ? funcionesMayor[idx] : funcionesMenor[idx]
+                    })
                     .ToList();
+
+                // Grado del acorde buscado en esta escala
+                var infoAcordeBuscado = acordesDetallados.FirstOrDefault(a => a.Acorde.Equals(acordeBuscado.Nombre, StringComparison.OrdinalIgnoreCase));
 
                 return new
                 {
                     NombreEscala = e.Nombre,
                     TipoEscala = e.Tipo,
                     NotasDeLaEscala = e.Notas,
-                    AcordesDeLaEscala = acordesOrdenados
+                    Relativa = new { Nombre = relativaNombre, Tipo = relativaTipo },
+                    GradoAcordeBuscado = infoAcordeBuscado?.Grado ?? "I",
+                    FuncionAcordeBuscado = infoAcordeBuscado?.Funcion ?? "Tónica",
+                    AcordesDeLaEscala = acordesDetallados
                 };
             })
         };

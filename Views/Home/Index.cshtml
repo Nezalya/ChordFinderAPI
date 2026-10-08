@@ -2,280 +2,431 @@
     ViewData["Title"] = "Chord Finder";
 }
 
-<!DOCTYPE html>
-<html lang="es" data-bs-theme="dark">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chord Finder</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- CDN de Bootstrap 5 e Iconos -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23d8965e'><path d='M9 13c0 1.105-1.12 2-2.5 2S4 14.105 4 13s1.12-2 2.5-2 2.5.895 2.5 2z'/><path fill-rule='evenodd' d='M9 3v10H8V3z'/><path d='M8 2.82a1 1 0 0 1 .804-.98l3- .6A1 1 0 0 1 13 2.22V4L8 5z'/></svg>" type="image/svg+xml">
+<title>Chord Finder</title>
 
-    <style>
-        body {
-            background-color: #120e0c;
-            color: #e6dfda;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        }
+<style>
+    /* PALETA CÁLIDA Y OSCURA PROPIA */
+    body {
+        background-color: #120e0c;
+        color: #e6dfda;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
 
-        .navbar-custom {
-            background-color: #1a1412;
-            border-bottom: 1px solid #2a221e;
-        }
+    .card-custom {
+        background-color: #1c1512;
+        border: 1px solid #2d231e;
+        border-radius: 12px;
+    }
 
-        .card-custom {
-            background-color: #1c1512;
-            border: 1px solid #2d231e;
-            border-radius: 12px;
-        }
+    .card-custom-inner {
+        background-color: #16100d;
+        border: 1px solid #281f1a;
+        border-radius: 10px;
+    }
 
-        .pill-badge {
-            background-color: #2a201b;
-            color: #cbbba8;
-            border: 1px solid #3d3028;
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.85rem;
-        }
+    .chord-tag {
+        background-color: #281f1a;
+        color: #d1c2b0;
+        border-radius: 8px;
+        padding: 4px 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
 
-        .chord-tag {
-            background-color: #281f1a;
-            color: #d1c2b0;
-            border-radius: 8px;
-            padding: 4px 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-block;
-        }
+    .chord-tag.active-chord {
+        background-color: #d8965e;
+        color: #120e0c;
+        font-weight: 700;
+    }
 
-        .chord-tag.active-chord {
-            background-color: #d8965e;
-            color: #120e0c;
-            font-weight: 700;
-        }
+    .search-input {
+        background-color: #241c18;
+        border: 1px solid #382c26;
+        color: #fff;
+    }
 
-        .search-input {
-            background-color: #241c18;
-            border: 1px solid #382c26;
-            color: #fff;
-        }
+    .search-input:focus {
+        background-color: #2a201b;
+        border-color: #d8965e;
+        color: #fff;
+        box-shadow: none;
+    }
 
-        .search-input:focus {
-            background-color: #2a201b;
-            border-color: #d8965e;
-            color: #fff;
-            box-shadow: none;
-        }
+    .btn-custom {
+        background-color: #c98a55;
+        color: #120e0c;
+        font-weight: 600;
+        border-radius: 8px;
+    }
 
-        .btn-custom {
-            background-color: #c98a55;
-            color: #120e0c;
-            font-weight: 600;
-            border-radius: 8px;
-        }
+    .btn-custom:hover {
+        background-color: #db9a63;
+        color: #000;
+    }
 
-        .btn-custom:hover {
-            background-color: #db9a63;
-            color: #000;
-        }
+    .pill-badge {
+        background-color: #2a201b;
+        color: #cbbba8;
+        border: 1px solid #3d3028;
+        border-radius: 20px;
+        padding: 2px 10px;
+        font-size: 0.8rem;
+    }
 
-        .text-muted-custom {
-            color: #9e8e82;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-    </style>
-</head>
-<body>
+    .text-muted {
+    color: #9e8e82 !important;
+    }
 
+    .text-muted-custom {
+        color: #FFFFFF !important;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .hover-card {
+        transition: border-color 0.15s ease-in-out, transform 0.15s ease-in-out;
+    }
+
+    .hover-card:hover {
+        border-color: #d8965e !important;
+        transform: translateY(-2px);
+    }
+
+    .table-custom {
+    color: #e6dfda !important;
+    --bs-table-bg: transparent;
+    --bs-table-color: #e6dfda;
+    }
+
+    .table-custom th {
+    color: #a09287 !important;
+    font-weight: 600;
+    border-bottom: 1px solid #2d231e;
+    font-size: 0.85rem;
+    }
+
+    .table-custom td {
+    color: #d1c2b0 !important; /* Texto claro para todas las celdas normales */
+    border-bottom: 1px solid #221a16;
+    padding: 12px 8px;
+    }
+
+    .table-custom tr.active-row td {
+    background-color: #2d2017 !important;
+    color: #f3be8b !important; /* Mantiene el color cálido/naranja para la fila activa */
+    font-weight: bold;
+    }
+</style>
+
+<div class="container-fluid py-4 px-4">
     <!-- BARRA SUPERIOR -->
-    <nav class="navbar navbar-custom py-3 mb-4">
-        <div class="container-fluid px-4">
-            <span class="navbar-brand fw-bold fs-4 text-light">Chord Finder</span>
-            
-            <div class="d-flex align-items-center gap-2" style="max-width: 450px; width: 100%;">
-                <div class="input-group">
-                    <span class="input-group-text search-input border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" id="inputAcorde" class="form-control search-input border-start-0" placeholder="Ej: G#, Am, Cmaj7..." value="G#">
-                </div>
-                <button id="btnBuscar" class="btn btn-custom px-4">Buscar</button>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0 text-light">Chord Finder</h3>
+        <div class="d-flex gap-2" style="max-width: 450px; width: 100%;">
+            <div class="input-group">
+                <span class="input-group-text search-input border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" id="inputAcorde" class="form-control search-input border-start-0" placeholder="Ej: G#, Am, Cmaj7..." value="G#">
             </div>
-        </div>
-    </nav>
-
-    <div class="container-fluid px-4">
-        <!-- ALERT DE ERROR -->
-        <div id="errorAlert" class="alert alert-danger d-none my-3" role="alert"></div>
-
-        <!-- SPINNER CARGANDO -->
-        <div id="loading" class="text-center d-none my-5">
-            <div class="spinner-border text-warning" role="status"></div>
-        </div>
-
-        <!-- CONTENIDO PRINCIPAL -->
-        <div id="resultados" class="row g-4 d-none">
-            
-            <!-- PANEL IZQUIERDO: DETALLES DEL ACORDE -->
-            <div class="col-lg-3">
-                <div class="card-custom p-4 h-100">
-                    <div class="mb-4">
-                        <span class="text-muted-custom font-monospace">Acorde Buscado</span>
-                        <h1 class="display-3 fw-bold text-light mt-1" id="resAcordeBuscado">--</h1>
-                    </div>
-
-                    <hr class="border-secondary opacity-25" />
-
-                    <div class="mb-4">
-                        <span class="text-muted-custom font-monospace">Notas del Acorde</span>
-                        <div class="d-flex gap-2 mt-2" id="resNotasContainer">
-                            <!-- Badges de notas agregados dinámicamente -->
-                        </div>
-                    </div>
-
-                    <hr class="border-secondary opacity-25" />
-
-                    <div>
-                        <span class="text-muted-custom font-monospace">Total de Escalas Encontradas</span>
-                        <h2 class="fw-bold mt-1 text-light" id="resTotalEscalas">0</h2>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PANEL DERECHO: LISTA DE ESCALAS -->
-            <div class="col-lg-9">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold mb-0">Escalas donde aparece el acorde</h5>
-                    <span class="text-muted small" id="resContadorHeader">0 resultados</span>
-                </div>
-
-                <div class="d-flex flex-column gap-3" id="listaEscalas">
-                    <!-- Tarjetas de escalas generadas dinámicamente -->
-                </div>
-            </div>
-
+            <button class="btn btn-custom px-4" onclick="ejecutarBusqueda()">Buscar</button>
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const inputAcorde = document.getElementById("inputAcorde");
-            const btnBuscar = document.getElementById("btnBuscar");
-            const loading = document.getElementById("loading");
-            const errorAlert = document.getElementById("errorAlert");
-            const resultados = document.getElementById("resultados");
+    <!-- CONTENEDOR PRINCIPAL DINÁMICO -->
+    <div class="row g-4" id="contenedorPrincipal">
+        <!-- Se renderiza desde JS -->
+    </div>
+</div>
 
-            btnBuscar.addEventListener("click", () => ejecutarBusqueda());
-            inputAcorde.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") ejecutarBusqueda();
-            });
+<script>
+    let datosBusquedaActual = null;
 
-            // Búsqueda inicial automática
-            ejecutarBusqueda();
+    document.addEventListener("DOMContentLoaded", () => {
+        ejecutarBusqueda();
+    });
 
-            async function ejecutarBusqueda() {
-                const acorde = inputAcorde.value.trim();
-                if (!acorde) return;
+    async function ejecutarBusqueda() {
+        const input = document.getElementById("inputAcorde").value.trim();
+        if (!input) return;
 
-                const acordeEncoded = encodeURIComponent(acorde);
-                ocultarPantalla();
-                loading.classList.remove("d-none");
-
-                try {
-                    const response = await fetch(`/api/Teoria/buscar-escalas-por-acorde/${acordeEncoded}`);
-                    if (!response.ok) {
-                        if (response.status === 404) throw new Error(`El acorde '${acorde}' no existe en la base de datos.`);
-                        throw new Error("Error al consultar el servidor.");
-                    }
-
-                    const data = await response.json();
-                    renderizarInterfaz(data);
-                } catch (err) {
-                    mostrarError(err.message);
-                } finally {
-                    loading.classList.add("d-none");
-                }
+        try {
+            const response = await fetch(`/api/Teoria/buscar-escalas-por-acorde/${encodeURIComponent(input)}`);
+            if (!response.ok) {
+                document.getElementById("contenedorPrincipal").innerHTML = `
+                    <div class="col-12 text-center py-5 text-muted">
+                        <h5>No se encontraron escalas para el acorde "${input}".</h5>
+                    </div>`;
+                return;
             }
 
-            function renderizarInterfaz(data) {
-                // 1. Panel Izquierdo
-                document.getElementById("resAcordeBuscado").innerText = data.acordeBuscado;
-                document.getElementById("resTotalEscalas").innerText = data.totalEscalasEncontradas;
-                document.getElementById("resContadorHeader").innerText = `${data.totalEscalasEncontradas} resultados`;
+            datosBusquedaActual = await response.json();
+            mostrarVistaLista();
+        } catch (error) {
+            console.error("Error al consultar la API:", error);
+        }
+    }
 
-                // Notas del acorde (Badges separados)
-                const notasContainer = document.getElementById("resNotasContainer");
-                notasContainer.innerHTML = "";
-                const notasArray = data.notasDelAcorde.split(", ");
-                notasArray.forEach(nota => {
-                    notasContainer.innerHTML += `<span class="chord-tag fs-6 px-3 py-2">${nota}</span>`;
-                });
+    // === VISTA 1: LISTA GENERAL ===
+    function mostrarVistaLista() {
+        const contenedor = document.getElementById("contenedorPrincipal");
+        const data = datosBusquedaActual;
 
-                // 2. Panel Derecho (Escalas)
-                const listaEscalas = document.getElementById("listaEscalas");
-                listaEscalas.innerHTML = "";
+        const notasHtml = data.notasDelAcorde.split(',')
+            .map(n => `<span class="chord-tag fs-6 px-3 py-2 me-1">${n.trim()}</span>`)
+            .join('');
 
-                data.escalasDondeAparece.forEach(escala => {
-                    // Mapear los 7 acordes en su orden armónico I, ii, iii, IV, V, vi, vii°
-                    const acordesLista = Array.isArray(escala.acordesDeLaEscala) 
-                        ? escala.acordesDeLaEscala 
-                        : escala.acordesDeLaEscala.split(", ");
+        let tarjetasEscalasHtml = data.escalasDondeAparece.map((escala, idx) => {
+            const acordesBadges = escala.acordesDeLaEscala.map(a => {
+                const esBuscado = a.acorde.toLowerCase() === data.acordeBuscado.toLowerCase();
+                return `<span class="chord-tag ${esBuscado ? 'active-chord' : ''}">${a.acorde}</span>`;
+            }).join(' ');
 
-                    const HTMLAcordes = acordesLista.map(acordeNombre => {
-                        // Si el acorde de la escala es el que buscó el usuario, resaltarlo en naranja/marrón claro
-                        const esElBuscado = acordeNombre.trim().toLowerCase() === data.acordeBuscado.trim().toLowerCase();
-                        const claseActiva = esElBuscado ? "active-chord" : "";
-                        return `<span class="chord-tag ${claseActiva}">${acordeNombre.trim()}</span>`;
-                    }).join(" ");
+            return `
+                <div class="card-custom p-3 mb-3 cursor-pointer hover-card" onclick="verDetalleEscala(${idx})">
+                    <div class="row align-items-center g-3">
+                        <div class="col-md-3 d-flex align-items-center gap-2">
+                            <h5 class="fw-bold mb-0 text-light">${escala.nombreEscala}</h5>
+                            <span class="pill-badge">${escala.tipoEscala}</span>
+                        </div>
+                        <div class="col-md-3">
+                            <span class="text-muted-custom d-block">Notas de la escala</span>
+                            <span class="small text-light opacity-75">${escala.notasDeLaEscala}</span>
+                        </div>
+                        <div class="col-md-5">
+                            <span class="text-muted-custom d-block mb-1">Acordes de la escala</span>
+                            <div class="d-flex flex-wrap gap-1">
+                                ${acordesBadges}
+                            </div>
+                        </div>
+                        <div class="col-md-1 text-end text-muted">
+                            <i class="bi bi-chevron-right fs-5"></i>
+                        </div>
+                    </div>
+                </div>`;
+        }).join('');
 
-                    const itemHtml = `
-                        <div class="card-custom p-3">
-                            <div class="row align-items-center g-3">
-                                <!-- Nombre y Tipo -->
-                                <div class="col-md-3 d-flex align-items-center gap-2">
-                                    <h5 class="fw-bold mb-0 text-light">${escala.nombreEscala}</h5>
-                                    <span class="pill-badge">${escala.tipoEscala}</span>
-                                </div>
+        contenedor.innerHTML = `
+            <!-- Panel Izquierdo -->
+            <div class="col-lg-3">
+                <div class="card-custom p-4 h-100">
+                    <div class="mb-4">
+                        <span class="text-muted-custom">Acorde Buscado</span>
+                        <h1 class="display-3 fw-bold text-light mt-1">${data.acordeBuscado}</h1>
+                    </div>
+                    <hr class="border-secondary opacity-25 my-3" />
+                    <div class="mb-4">
+                        <span class="text-muted-custom">Notas del Acorde</span>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            ${notasHtml}
+                        </div>
+                    </div>
+                    <hr class="border-secondary opacity-25 my-3" />
+                    <div>
+                        <span class="text-muted-custom">Total de Escalas Encontradas</span>
+                        <h2 class="fw-bold mt-1 text-light">${data.totalEscalasEncontradas}</h2>
+                    </div>
+                </div>
+            </div>
 
-                                <!-- Notas de la Escala -->
-                                <div class="col-md-3">
-                                    <span class="text-muted-custom d-block">Notas de la escala</span>
-                                    <span class="small text-light opacity-75">${escala.notasDeLaEscala}</span>
-                                </div>
+            <!-- Panel Derecho (Lista) -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-light">Escalas donde aparece el acorde</h5>
+                    <span class="text-muted small">${data.totalEscalasEncontradas} resultados</span>
+                </div>
+                ${tarjetasEscalasHtml}
+            </div>
+        `;
+    }
 
-                                <!-- Acordes de la Escala (Orden I, ii, iii, IV, V, vi, vii°) -->
-                                <div class="col-md-5">
-                                    <span class="text-muted-custom d-block mb-1">Acordes de la escala</span>
-                                    <div class="d-flex flex-wrap gap-1">
-                                        ${HTMLAcordes}
-                                    </div>
-                                </div>
+    // === VISTA 2: VISTA DETALLADA ===
+    function verDetalleEscala(index) {
+        const contenedor = document.getElementById("contenedorPrincipal");
+        const data = datosBusquedaActual;
+        const escala = data.escalasDondeAparece[index];
 
-                                <!-- Flecha detalle -->
-                                <div class="col-md-1 text-end text-muted">
-                                    <i class="bi bi-chevron-right fs-5"></i>
+        const notasHtml = data.notasDelAcorde.split(',')
+            .map(n => `<span class="chord-tag fs-6 px-3 py-2 me-1">${n.trim()}</span>`)
+            .join('');
+
+        // Lista de escalas a la izquierda
+        let listaEscalasLateral = data.escalasDondeAparece.map((e, idx) => {
+            const esSeleccionada = idx === index;
+            const claseItem = esSeleccionada ? 'border-warning style="border-color: #d8965e !important;"' : 'hover-card';
+
+            return `
+                <div class="card-custom p-3 mb-2 cursor-pointer ${claseItem}" onclick="verDetalleEscala(${idx})">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-light">${e.nombreEscala} <span class="pill-badge ms-1">${e.tipoEscala}</span></span>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </div>
+                    <span class="text-muted-custom d-block mt-2" style="font-size: 0.7rem;">Notas: ${e.notasDeLaEscala}</span>
+                </div>`;
+        }).join('');
+
+        // Cuadrícula de Funciones de los Grados
+        let funcionesGradosHtml = escala.acordesDeLaEscala.map(a => {
+            const esBuscado = a.acorde.toLowerCase() === data.acordeBuscado.toLowerCase();
+            const estiloResaltado = esBuscado ? 'background-color: #d8965e; color: #120e0c; font-weight: bold; border-radius: 6px;' : '';
+    
+            return `
+                <div class="p-1 text-center flex-fill d-flex flex-column justify-content-center align-items-center" style="width: 14.28%; ${estiloResaltado}">
+                    <div class="fw-bold" style="font-size: 0.85rem;">${a.grado}</div>
+                    <small style="font-size: 0.6rem; line-height: 1.1; word-break: break-word;" class="${esBuscado ? 'text-dark' : 'text-muted-custom'} text-uppercase mt-1 d-block">
+                        ${a.funcion}
+                    </small>
+                </div>`;
+        }).join('');
+
+        // Generar Progresiones Comunes dinámicas
+        const acs = escala.acordesDeLaEscala;
+        let progresiones = [];
+        if (escala.tipoEscala.toLowerCase() === "menor") {
+            progresiones = [
+                { patron: "i - v - VI - iv", ch: `${acs[0].acorde} - ${acs[4].acorde} - ${acs[5].acorde} - ${acs[3].acorde}`, desc: "Melancólica y muy usada en el pop y rock." },
+                { patron: "i - iv - v - i", ch: `${acs[0].acorde} - ${acs[3].acorde} - ${acs[4].acorde} - ${acs[0].acorde}`, desc: "Clásica y emotiva." },
+                { patron: "VI - VII° - i - iv", ch: `${acs[5].acorde} - ${acs[6].acorde} - ${acs[0].acorde} - ${acs[3].acorde}`, desc: "Sonido más dramático y cinematográfico." },
+                { patron: "i - v - iv - III", ch: `${acs[0].acorde} - ${acs[4].acorde} - ${acs[3].acorde} - ${acs[2].acorde}`, desc: "Muy usada en pop, rock y R&B." }
+            ];
+        } else {
+            progresiones = [
+                { patron: "I - V - vi - IV", ch: `${acs[0].acorde} - ${acs[4].acorde} - ${acs[5].acorde} - ${acs[3].acorde}`, desc: "La progresión más popular del pop moderno." },
+                { patron: "I - IV - V - I", ch: `${acs[0].acorde} - ${acs[3].acorde} - ${acs[4].acorde} - ${acs[0].acorde}`, desc: "Estructura tradicional resolutiva." },
+                { patron: "ii - V - I", ch: `${acs[1].acorde} - ${acs[4].acorde} - ${acs[0].acorde}`, desc: "Progresión fundamental de jazz y baladas." },
+                { patron: "vi - IV - I - V", ch: `${acs[5].acorde} - ${acs[3].acorde} - ${acs[0].acorde} - ${acs[4].acorde}`, desc: "Progresión emotiva de tono menor a mayor." }
+            ];
+        }
+
+        let progresionesHtml = progresiones.map(p => `
+            <div class="col-md-3">
+                <div class="card-custom-inner p-3 h-100 text-center">
+                    <h5 class="fw-bold text-light mb-1">${p.patron}</h5>
+                    <div class="text-warning fw-semibold mb-2" style="color: #d8965e !important;">${p.ch}</div>
+                    <small class="text-muted small">${p.desc}</small>
+                </div>
+            </div>
+        `).join('');
+
+        // Filas de la Tabla
+        let filasTablaHtml = escala.acordesDeLaEscala.map(a => {
+            const esBuscado = a.acorde.toLowerCase() === data.acordeBuscado.toLowerCase();
+            return `
+                <tr class="${esBuscado ? 'active-row' : ''}">
+                    <td>${a.grado}</td>
+                    <td><strong>${a.acorde}</strong></td>
+                    <td>${a.notas}</td>
+                    <td>${a.funcion}</td>
+                </tr>`;
+        }).join('');
+
+        contenedor.innerHTML = `
+            <!-- Panel Izquierdo: Menú Lateral -->
+            <div class="col-lg-3">
+                <div class="card-custom p-4 mb-3">
+                    <span class="text-muted-custom">Acorde Buscado</span>
+                    <h1 class="display-3 fw-bold text-light my-1">${data.acordeBuscado}</h1>
+                    <hr class="border-secondary opacity-25 my-3" />
+                    <span class="text-muted-custom d-block mb-2">Notas del Acorde</span>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        ${notasHtml}
+                    </div>
+                    <hr class="border-secondary opacity-25 my-3" />
+                    <span class="text-muted-custom">Total de Escalas Encontradas</span>
+                    <h2 class="fw-bold mt-1 text-light">${data.totalEscalasEncontradas}</h2>
+                </div>
+
+                <span class="text-muted-custom d-block mb-2 fw-bold">ESCALAS</span>
+                ${listaEscalasLateral}
+            </div>
+
+            <!-- Panel Derecho: Detalle Extendido -->
+            <div class="col-lg-9">
+                <div class="card-custom p-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <button class="btn btn-outline-secondary text-light border-0" onclick="mostrarVistaLista()">
+                                <i class="bi bi-arrow-left fs-4"></i>
+                            </button>
+                            <div>
+                                <h2 class="fw-bold mb-0 text-light">${escala.nombreEscala} 
+                                    <span class="pill-badge ms-2 align-middle">${escala.tipoEscala}</span>
+                                </h2>
+                                <span class="text-muted small">Notas de la escala: <strong class="text-light">${escala.notasDeLaEscala}</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Botón/Card para ir a la Relativa -->
+                        <div class="card-custom-inner p-2 px-3 cursor-pointer hover-card text-center" onclick="navegarAEscala('${escala.relativa.nombre}')">
+                            <small class="text-muted-custom d-block">Relativa ${escala.relativa.tipo.toLowerCase()} <i class="bi bi-arrow-left-right ms-1"></i></small>
+                            <span class="fw-bold text-light">${escala.relativa.nombre}</span>
+                        </div>
+                    </div>
+
+                    <!-- Análisis de Grados -->
+                    <h5 class="fw-bold text-light mb-3">Análisis de Grados del Acorde Buscado</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-5">
+                            <div class="card-custom-inner p-3 d-flex align-items-center gap-3 h-100">
+                                <h1 class="display-3 fw-bold mb-0" style="color: #d8965e;">${data.acordeBuscado}</h1>
+                                <div>
+                                    <h5 class="fw-bold mb-1 text-light">Grado ${escala.gradoAcordeBuscado} / ${escala.funcionAcordeBuscado}</h5>
+                                    <small class="text-muted small">El acorde ${data.acordeBuscado} cumple la función de ${escala.funcionAcordeBuscado.toLowerCase()} en la escala de ${escala.nombreEscala}.</small>
                                 </div>
                             </div>
                         </div>
-                    `;
 
-                    listaEscalas.insertAdjacentHTML("beforeend", itemHtml);
-                });
+                        <div class="col-md-7">
+                            <div class="card-custom-inner p-3 h-100">
+                                <span class="text-muted-custom d-block mb-2">Funciones de los grados en ${escala.nombreEscala}</span>
+                                <div class="d-flex justify-content-between pt-1">
+                                    ${funcionesGradosHtml}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                resultados.classList.remove("d-none");
-            }
+                    <!-- Progresiones Comunes -->
+                    <h5 class="fw-bold text-light mb-3">Progresiones Comunes de la Escala</h5>
+                    <div class="row g-3 mb-4">
+                        ${progresionesHtml}
+                    </div>
 
-            function mostrarError(msg) {
-                ocultarPantalla();
-                errorAlert.innerText = msg;
-                errorAlert.classList.remove("d-none");
-            }
+                    <!-- Acordes de la Escala -->
+                    <h5 class="fw-bold text-light mb-3">Acordes de la Escala</h5>
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Grado</th>
+                                    <th>Acorde</th>
+                                    <th>Notas</th>
+                                    <th>Función</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filasTablaHtml}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 
-            function ocultarPantalla() {
-                errorAlert.classList.add("d-none");
-                resultados.classList.add("d-none");
-            }
-        });
-    </script>
-</body>
-</html>
+    // Función para navegar directamente a la escala relativa si está entre las encontradas
+    function navegarAEscala(nombreEscalaBuscada) {
+        const index = datosBusquedaActual.escalasDondeAparece.findIndex(e => e.nombreEscala.toLowerCase() === nombreEscalaBuscada.toLowerCase());
+        if (index !== -1) {
+            verDetalleEscala(index);
+        } else {
+            alert(`La escala relativa ${nombreEscalaBuscada} no contiene al acorde ${datosBusquedaActual.acordeBuscado}.`);
+        }
+    }
+</script>
